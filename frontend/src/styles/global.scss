@@ -1,0 +1,62 @@
+$background: #f3f6fb;
+$surface: #ffffff;
+$primary: #1d4ed8;
+$primary-dark: #1e3a8a;
+$text-main: #0f172a;
+$text-secondary: #64748b;
+$border: #e2e8f0;
+$success: #16a34a;
+
+html {
+  overflow-y: auto;
+}
+
+body {
+  margin: 0;
+  background: $background;
+  color: $text-main;
+  font-family: "Inter", "Roboto", sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.enterprise-card {
+  background: $surface;
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  border-radius: 22px;
+  box-shadow:
+    0 2px 4px rgba(15, 23, 42, 0.03),
+    0 14px 40px rgba(15, 23, 42, 0.07);
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(14px);
+  border-radius: 22px;
+}
+
+.section-title {
+  color: $text-main;
+  font-size: 1.1rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.section-description {
+  color: $text-secondary;
+  font-size: 0.85rem;
+}
+
+.soft-divider {
+  border-color: #eef2f7 !important;
+}
+
+@media (max-width: 600px) {
+  .enterprise-card,
+  .glass-card {
+    border-radius: 16px;
+  }
+}
