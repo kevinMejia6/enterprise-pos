@@ -1,6 +1,8 @@
 # Enterprise POS
 
-Prueba técnica desarrollada para la gestión de productos y ventas utilizando Node.js, Express, Sequelize, MariaDB, Vue.js y Vuetify.
+Prueba técnica desarrollada utilizando **Node.js**, **Express.js**, **Sequelize**, **Vue.js 2**, **Vuetify** y **MySQL**.
+
+La aplicación permite administrar productos y registrar ventas mediante un flujo básico de Punto de Venta (POS), cumpliendo con los requerimientos solicitados en la prueba técnica.
 
 ---
 
@@ -11,74 +13,53 @@ Prueba técnica desarrollada para la gestión de productos y ventas utilizando N
 - Node.js
 - Express.js
 - Sequelize ORM
-- MariaDB / MySQL
-- express-validator
+- MySQL
 
 ## Frontend
 
 - Vue.js 2
 - Vuetify
-- Vue Router
 - Axios
-- SCSS
-
----
-
-# Arquitectura
-
-Backend
-
-```
-Controller
-    ↓
-Service
-    ↓
-Repository
-    ↓
-Sequelize
-    ↓
-MariaDB
-```
-
-Frontend
-
-```
-Views
-    ↓
-Components
-    ↓
-Services
-    ↓
-API REST
-```
+- Vue Router
 
 ---
 
 # Funcionalidades implementadas
 
-## Productos
+## Administración de productos
 
-- Crear producto
-- Editar producto
-- Buscar por nombre o código de barras
-- Listado de productos
-- Estado activo/inactivo
+- Crear productos
+- Editar productos
+- Buscar productos por nombre
+- Buscar productos por código de barras
 - Imagen del producto
+- Estado activo/inactivo
+
+Cada producto contiene:
+
+- Nombre
+- Precio
+- Código de barras
+
+---
 
 ## Punto de Venta
 
-- Agregar productos al carrito
+- Agregar productos a la venta
 - Modificar cantidad
-- Modificar precio antes de registrar la venta
-- Eliminar productos del carrito
-- Cálculo automático del subtotal y total
-- Registro de venta
+- Editar precio antes de registrar la venta
+- Eliminar productos de la venta
+- Cálculo automático del subtotal
+- Cálculo automático del total
+- Registro de la venta
+
+---
 
 ## Historial de ventas
 
-- Listado de ventas
-- Detalle de venta
-- Búsqueda en tiempo real
+- Listado de ventas registradas
+- Consulta del detalle de cada venta
+- Búsqueda en tiempo real por número de venta
 - Filtro por rango de fechas
 - Filtro por estado
 - Paginación
@@ -87,17 +68,56 @@ API REST
 
 # Base de datos
 
-## Tablas
+La solución almacena la información utilizando las siguientes tablas:
 
 - products
 - sales
 - sale_details
 
+La relación entre las tablas permite mantener correctamente la información de cada venta y los productos asociados.
+
+---
+
+# Arquitectura
+
+## Backend
+
+```
+Controllers
+      │
+      ▼
+Services
+      │
+      ▼
+Repositories
+      │
+      ▼
+Sequelize ORM
+      │
+      ▼
+MySQL
+```
+
+## Frontend
+
+```
+Views
+   │
+   ▼
+Components
+   │
+   ▼
+Services
+   │
+   ▼
+API REST
+```
+
 ---
 
 # Instalación
 
-## 1. Clonar repositorio
+## Clonar el repositorio
 
 ```bash
 git clone https://github.com/kevinMejia6/enterprise-pos.git
@@ -107,10 +127,10 @@ git clone https://github.com/kevinMejia6/enterprise-pos.git
 
 # Backend
 
-Entrar a la carpeta
+Ingresar al proyecto
 
 ```bash
-cd backend
+cd enterprise-pos/backend
 ```
 
 Instalar dependencias
@@ -119,13 +139,7 @@ Instalar dependencias
 npm install
 ```
 
-Crear archivo
-
-```
-.env
-```
-
-Ejemplo
+Crear el archivo `.env`
 
 ```env
 PORT=3000
@@ -134,7 +148,7 @@ DB_HOST=127.0.0.1
 DB_PORT=3306
 DB_NAME=enterprise_pos
 DB_USER=root
-DB_PASSWORD=tu_password
+DB_PASSWORD=TU_PASSWORD
 DB_DIALECT=mysql
 ```
 
@@ -150,7 +164,7 @@ Iniciar servidor
 npm run dev
 ```
 
-Servidor
+La API quedará disponible en:
 
 ```
 http://localhost:3000
@@ -160,10 +174,10 @@ http://localhost:3000
 
 # Frontend
 
-Entrar
+Ingresar al proyecto
 
 ```bash
-cd frontend
+cd enterprise-pos/frontend
 ```
 
 Instalar dependencias
@@ -172,13 +186,13 @@ Instalar dependencias
 npm install
 ```
 
-Iniciar
+Iniciar aplicación
 
 ```bash
 npm run serve
 ```
 
-Aplicación
+La aplicación quedará disponible en:
 
 ```
 http://localhost:8080
@@ -186,24 +200,26 @@ http://localhost:8080
 
 ---
 
-# API
+# Endpoints principales
 
 ## Productos
 
-```
-GET     /api/products
-GET     /api/products/:id
-POST    /api/products
-PUT     /api/products/:id
-```
+| Método | Endpoint |
+|---------|----------|
+| GET | /api/products |
+| GET | /api/products/:id |
+| POST | /api/products |
+| PUT | /api/products/:id |
+
+---
 
 ## Ventas
 
-```
-GET     /api/sales
-GET     /api/sales/:id
-POST    /api/sales
-```
+| Método | Endpoint |
+|---------|----------|
+| GET | /api/sales |
+| GET | /api/sales/:id |
+| POST | /api/sales |
 
 ---
 
@@ -223,21 +239,27 @@ enterprise-pos
 │   │   ├── services
 │   │   ├── utils
 │   │   └── validations
+│   │
+│   ├── package.json
+│   └── .env
 │
 └── frontend
+    ├── public
     ├── src
     │   ├── components
     │   ├── router
     │   ├── services
     │   ├── styles
     │   └── views
+    │
+    └── package.json
 ```
 
 ---
 
-# Flujo de Git
+# Control de versiones
 
-El desarrollo se realizó utilizando ramas para cada funcionalidad.
+El desarrollo fue realizado utilizando ramas independientes para separar los entregables.
 
 ```
 main
@@ -249,18 +271,40 @@ main
 └── ProductionEnv
 ```
 
----
+### feature/productos
 
-# Autor
+Incluye:
 
-Kevin Mejía
+- Administración de productos
+- CRUD de productos
+- Búsqueda de productos
+- Componentes relacionados con productos
 
-GitHub
+### feature/ventas
 
-https://github.com/kevinMejia6
+Incluye:
 
----
+- Registro de ventas
+- Historial de ventas
+- Detalle de ventas
+- Filtros
+- Paginación
+- Componentes relacionados con ventas
+
+### ProductionEnv
+
+Rama final que integra todos los entregables solicitados en la prueba técnica.
+
+
 
 # Notas
 
-La aplicación fue desarrollada como parte de una prueba técnica, implementando buenas prácticas de arquitectura por capas, separación de responsabilidades y control de versiones mediante Git.
+Este proyecto fue desarrollado como solución para la prueba técnica solicitada, utilizando la arquitectura propuesta por el desarrollador y respetando los requerimientos funcionales indicados en el documento de evaluación.
+
+El desarrollo incluye:
+
+- Separación por capas en el backend.
+- Persistencia mediante Sequelize.
+- Migraciones para la creación de la base de datos.
+- Separación de entregables mediante ramas de Git.
+- Integración final en la rama **ProductionEnv**.
