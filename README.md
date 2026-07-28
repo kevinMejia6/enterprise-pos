@@ -1,8 +1,8 @@
 # Enterprise POS
 
-Prueba técnica desarrollada utilizando **Node.js**, **Express.js**, **Sequelize**, **Vue.js 2**, **Vuetify** y **MySQL**.
+Prueba técnica desarrollada utilizando **Node.js, Express.js, Sequelize, Vue.js 2, Vuetify y MySQL**.
 
-La aplicación permite administrar productos y registrar ventas mediante un flujo básico de Punto de Venta (POS), cumpliendo con los requerimientos solicitados en la prueba técnica.
+La aplicación implementa un sistema de Punto de Venta (POS) que permite administrar productos y registrar ventas, siguiendo una arquitectura por capas y buenas prácticas de desarrollo.
 
 ---
 
@@ -14,6 +14,7 @@ La aplicación permite administrar productos y registrar ventas mediante un fluj
 - Express.js
 - Sequelize ORM
 - MySQL
+- Express Validator
 
 ## Frontend
 
@@ -30,9 +31,9 @@ La aplicación permite administrar productos y registrar ventas mediante un fluj
 
 - Crear productos
 - Editar productos
-- Buscar productos por nombre
-- Buscar productos por código de barras
-- Imagen del producto
+- Buscar por nombre
+- Buscar por código de barras
+- Actualizar información
 - Estado activo/inactivo
 
 Cada producto contiene:
@@ -40,41 +41,43 @@ Cada producto contiene:
 - Nombre
 - Precio
 - Código de barras
+- Imagen
 
 ---
 
-## Punto de Venta
+## Punto de Venta (POS)
 
 - Agregar productos a la venta
-- Modificar cantidad
-- Editar precio antes de registrar la venta
-- Eliminar productos de la venta
+- Modificar cantidades
+- Modificar precio unitario
+- Eliminar productos del carrito
 - Cálculo automático del subtotal
 - Cálculo automático del total
-- Registro de la venta
+- Registro de ventas
 
 ---
 
 ## Historial de ventas
 
-- Listado de ventas registradas
-- Consulta del detalle de cada venta
+- Listado de ventas
 - Búsqueda en tiempo real por número de venta
 - Filtro por rango de fechas
-- Filtro por estado
+- Visualización del detalle de venta
 - Paginación
+- Resumen estadístico
 
 ---
 
 # Base de datos
 
-La solución almacena la información utilizando las siguientes tablas:
+La estructura de la base de datos es administrada mediante **migraciones de Sequelize**.
+
+Las siguientes tablas son creadas automáticamente:
 
 - products
 - sales
 - sale_details
-
-La relación entre las tablas permite mantener correctamente la información de cada venta y los productos asociados.
+- SequelizeMeta
 
 ---
 
@@ -84,17 +87,13 @@ La relación entre las tablas permite mantener correctamente la información de 
 
 ```
 Controllers
-      │
-      ▼
+        │
 Services
-      │
-      ▼
+        │
 Repositories
-      │
-      ▼
+        │
 Sequelize ORM
-      │
-      ▼
+        │
 MySQL
 ```
 
@@ -102,14 +101,11 @@ MySQL
 
 ```
 Views
-   │
-   ▼
+     │
 Components
-   │
-   ▼
+     │
 Services
-   │
-   ▼
+     │
 API REST
 ```
 
@@ -117,7 +113,7 @@ API REST
 
 # Instalación
 
-## Clonar el repositorio
+## 1. Clonar repositorio
 
 ```bash
 git clone https://github.com/kevinMejia6/enterprise-pos.git
@@ -139,32 +135,70 @@ Instalar dependencias
 npm install
 ```
 
-Crear el archivo `.env`
+---
+
+## Crear la base de datos
+
+Antes de ejecutar las migraciones, crear una base de datos vacía en MySQL:
+
+```sql
+CREATE DATABASE enterprise_pos
+CHARACTER SET utf8mb4
+COLLATE utf8mb4_unicode_ci;
+```
+
+---
+
+## Configurar variables de entorno
+
+Copiar el archivo de ejemplo:
+
+```bash
+cp .env.example .env
+```
+
+o en Windows PowerShell:
+
+```powershell
+Copy-Item .env.example .env
+```
+
+Configurar el archivo `.env`:
 
 ```env
+NODE_ENV=development
+
 PORT=3000
 
 DB_HOST=127.0.0.1
 DB_PORT=3306
 DB_NAME=enterprise_pos
 DB_USER=root
-DB_PASSWORD=TU_PASSWORD
+DB_PASSWORD=
 DB_DIALECT=mysql
+
+FRONTEND_URL=http://localhost:8080
 ```
 
-Ejecutar migraciones
+---
+
+## Ejecutar migraciones
 
 ```bash
 npx sequelize-cli db:migrate
 ```
 
-Iniciar servidor
+Las migraciones crearán automáticamente todas las tablas necesarias del sistema.
+
+---
+
+## Iniciar backend
 
 ```bash
 npm run dev
 ```
 
-La API quedará disponible en:
+La API estará disponible en:
 
 ```
 http://localhost:3000
@@ -177,7 +211,7 @@ http://localhost:3000
 Ingresar al proyecto
 
 ```bash
-cd enterprise-pos/frontend
+cd ../frontend
 ```
 
 Instalar dependencias
@@ -192,7 +226,7 @@ Iniciar aplicación
 npm run serve
 ```
 
-La aplicación quedará disponible en:
+Disponible en:
 
 ```
 http://localhost:8080
@@ -231,6 +265,7 @@ enterprise-pos
 ├── backend
 │   ├── migrations
 │   ├── src
+│   │   ├── config
 │   │   ├── controllers
 │   │   ├── middlewares
 │   │   ├── models
@@ -239,72 +274,55 @@ enterprise-pos
 │   │   ├── services
 │   │   ├── utils
 │   │   └── validations
-│   │
-│   ├── package.json
-│   └── .env
+│   └── package.json
 │
-└── frontend
-    ├── public
-    ├── src
-    │   ├── components
-    │   ├── router
-    │   ├── services
-    │   ├── styles
-    │   └── views
-    │
-    └── package.json
+├── frontend
+│   ├── public
+│   ├── src
+│   │   ├── components
+│   │   ├── router
+│   │   ├── services
+│   │   ├── styles
+│   │   └── views
+│   └── package.json
+│
+└── README.md
 ```
 
 ---
 
-# Control de versiones
+# Flujo de Git
 
-El desarrollo fue realizado utilizando ramas independientes para separar los entregables.
+Durante el desarrollo se trabajó utilizando ramas para separar funcionalidades:
 
-```
-main
-│
-├── feature/productos
-│
-├── feature/ventas
-│
-└── ProductionEnv
-```
+| Rama | Descripción |
+|------|-------------|
+| main | Rama principal del repositorio |
+| feature/productos | Desarrollo del módulo de productos |
+| feature/ventas | Desarrollo del módulo de ventas e historial |
+| ProductionEnv | Rama de integración con la solución final |
 
-### feature/productos
+Cada funcionalidad fue desarrollada de forma independiente y posteriormente integrada mediante Git.
 
-Incluye:
+---
 
-- Administración de productos
-- CRUD de productos
-- Búsqueda de productos
-- Componentes relacionados con productos
+# Características destacadas
 
-### feature/ventas
-
-Incluye:
-
-- Registro de ventas
-- Historial de ventas
-- Detalle de ventas
-- Filtros
+- Arquitectura por capas
+- Separación de responsabilidades
+- Validaciones Backend
+- API REST
+- Sequelize ORM
+- Migraciones para base de datos
+- Componentes reutilizables
+- Diseño responsivo
+- Sidebar reutilizable
+- Búsqueda en tiempo real
+- Filtros por fecha
 - Paginación
-- Componentes relacionados con ventas
+- Historial de ventas
+- Detalle de venta
+- Actualización dinámica de precios en el POS
 
-### ProductionEnv
+---
 
-Rama final que integra todos los entregables solicitados en la prueba técnica.
-
-
-
-# Notas
-
-Este proyecto fue desarrollado como solución para la prueba técnica solicitada, utilizando la arquitectura propuesta por el desarrollador y respetando los requerimientos funcionales indicados en el documento de evaluación.
-
-El desarrollo incluye:
-
-- Separación por capas en el backend.
-- Persistencia mediante Sequelize.
-- Migraciones para la creación de la base de datos.
-- Separación de entregables mediante ramas de Git.
-- Integración final en la rama **ProductionEnv**.
