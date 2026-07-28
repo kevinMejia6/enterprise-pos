@@ -1,17 +1,11 @@
 <template>
   <v-app>
-    <PosView />
+    <router-view />
   </v-app>
 </template>
 
 <script>
-import PosView from "./views/PosView.vue";
-
 export default {
-  name: "App",
-
-  components: {
-    PosView
-  }
+  name: "App"
 };
 </script>
