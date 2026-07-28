@@ -1,13 +1,21 @@
+"use strict";
 
-
-// Este archivo define el repositorio de productos, que es responsable de interactuar con la base de datos para realizar operaciones relacionadas con los productos.
+// Este archivo define el repositorio de productos.
+// Es responsable de interactuar con la base de datos.
 
 const { Op } = require("sequelize");
 const { Product } = require("../models");
 
 class ProductRepository {
-  async findAll({ search = "", page = 1, limit = 12 }) {
-    const offset = (page - 1) * limit;
+  async findAll({ search = "", page = 1, limit = 12 } = {}) {
+    const safePage = Math.max(Number(page) || 1, 1);
+
+    const safeLimit = Math.min(
+      Math.max(Number(limit) || 12, 1),
+      100
+    );
+
+    const offset = (safePage - 1) * safeLimit;
 
     const where = {};
 
@@ -15,14 +23,14 @@ class ProductRepository {
       where[Op.or] = [
         {
           name: {
-            [Op.like]: `%${search}%`,
-          },
+            [Op.like]: `%${search}%`
+          }
         },
         {
           barcode: {
-            [Op.like]: `%${search}%`,
-          },
-        },
+            [Op.like]: `%${search}%`
+          }
+        }
       ];
     }
 
@@ -30,10 +38,10 @@ class ProductRepository {
       where,
       order: [
         ["active", "DESC"],
-        ["name", "ASC"],
+        ["name", "ASC"]
       ],
-      limit,
-      offset,
+      limit: safeLimit,
+      offset
     });
   }
 
@@ -44,8 +52,8 @@ class ProductRepository {
   async findByBarcode(barcode) {
     return Product.findOne({
       where: {
-        barcode,
-      },
+        barcode
+      }
     });
   }
 
@@ -54,9 +62,9 @@ class ProductRepository {
       where: {
         barcode,
         id: {
-          [Op.ne]: id,
-        },
-      },
+          [Op.ne]: id
+        }
+      }
     });
   }
 

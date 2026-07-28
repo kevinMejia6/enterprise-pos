@@ -1,9 +1,9 @@
+"use strict";
 
-
-
-// Este archivo define el modelo de datos para la entidad "Product" en la base de datos.
-
-const { DataTypes, Model } = require('sequelize');
+const {
+  Model,
+  DataTypes
+} = require("sequelize");
 
 class Product extends Model {
   static initModel(sequelize) {
@@ -11,64 +11,39 @@ class Product extends Model {
       {
         id: {
           type: DataTypes.INTEGER.UNSIGNED,
-          allowNull: false,
           autoIncrement: true,
           primaryKey: true
         },
 
         name: {
           type: DataTypes.STRING(150),
-          allowNull: false,
-          validate: {
-            notEmpty: {
-              msg: 'El nombre del producto es obligatorio'
-            },
-            len: {
-              args: [2, 150],
-              msg: 'El nombre debe contener entre 2 y 150 caracteres'
-            }
-          }
+          allowNull: false
         },
 
         barcode: {
           type: DataTypes.STRING(100),
           allowNull: false,
-          unique: {
-            name: 'products_barcode_unique',
-            msg: 'El código de barras ya está registrado'
-          },
-          validate: {
-            notEmpty: {
-              msg: 'El código de barras es obligatorio'
-            },
-            len: {
-              args: [3, 100],
-              msg: 'El código de barras debe contener entre 3 y 100 caracteres'
-            }
-          }
+          unique: true
         },
 
         price: {
-          type: DataTypes.DECIMAL(10, 2),
+          type: DataTypes.DECIMAL(12, 2),
           allowNull: false,
-          get() {
-            const value = this.getDataValue('price');
-            return value === null ? null : Number(value);
-          },
           validate: {
-            isDecimal: {
-              msg: 'El precio debe ser un valor numérico'
-            },
-            min: {
-              args: [0.01],
-              msg: 'El precio debe ser mayor que cero'
-            }
+            min: 0.01
           }
         },
 
         description: {
           type: DataTypes.STRING(500),
           allowNull: true
+        },
+
+        imageUrl: {
+          type: DataTypes.STRING(1000),
+          allowNull: true,
+          defaultValue: null,
+          field: "image_url"
         },
 
         active: {
@@ -79,20 +54,24 @@ class Product extends Model {
       },
       {
         sequelize,
-        modelName: 'Product',
-        tableName: 'products',
+        modelName: "Product",
+        tableName: "products",
         timestamps: true,
         underscored: true,
-        defaultScope: {
-          attributes: {
-            exclude: []
-          }
-        }
+        freezeTableName: true
       }
     );
 
     return Product;
   }
+
+  static associate(models) {
+    Product.hasMany(models.SaleDetail, {
+      foreignKey: "productId",
+      as: "saleDetails"
+    });
+  }
+  
 }
 
 module.exports = Product;
